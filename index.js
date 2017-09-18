@@ -7,7 +7,7 @@ const jsonQuery = require('json-query');
  * @param  {} path
  * @param  {} file
  */
-function getArrayObject(path, file) {
+function getJsonFile(path, file) {
     let jsonPath = path || '';
     let json = `${jsonPath}${file}.json`;
 
@@ -128,7 +128,7 @@ function addObjectToArray(arrayObject, newObject) {
 
 }
 
-module.exports.getArrayObject = getArrayObject;
+module.exports.getJsonFile = getJsonFile;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
 module.exports.updateArrayObject = updateArrayObject;
 module.exports.updateArrayObjectNested = updateArrayObjectNested;
