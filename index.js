@@ -106,7 +106,31 @@ function updateArrayObjectNested(arrayObject, path, value, newValue) {
 
 }
 
+/**
+ * This method update the specified file with the information in the array object.
+ * The file is created if not exist.
+ * 
+ * @param  {} path
+ * @param  {} file
+ * @param  {} arrayObject
+ */
+function saveArrayObject(path, file, arrayObject) {
+
+}
+
+/**
+ * This method add new json object to the array object.
+ * 
+ * @param  {} arrayObject
+ * @param  {} newObject
+ */
+function addObjectToArray(arrayObject, newObject) {
+
+}
+
 module.exports.getArrayObject = getArrayObject;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
 module.exports.updateArrayObject = updateArrayObject;
 module.exports.updateArrayObjectNested = updateArrayObjectNested;
+module.exports.saveArrayObject = saveArrayObject;
+module.exports.addObjectToArray = addObjectToArray;
