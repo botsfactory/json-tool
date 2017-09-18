@@ -1,0 +1,29 @@
+{
+  "name": "@botsfactory/json-recognizer-tool",
+  "version": "0.0.1",
+  "description": "Tool to manage json recognizers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/botsfactory/json-recognizer-tool.git"
+  },
+  "keywords": [
+    "BotsFactory",
+    "chatbot",
+    "bot"
+  ],
+  "author": "BotsFactory",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/botsfactory/json-recognizer-tool/issues"
+  },
+  "homepage": "https://github.com/botsfactory/json-recognizer-tool#readme",
+  "dependencies": {
+    "jsdoc": "^3.5.5",
+    "json-query": "^2.2.2",
+    "jsonfile": "^4.0.0"
+  }
+}
