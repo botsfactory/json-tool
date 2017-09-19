@@ -121,12 +121,23 @@ function saveArrayObject(path, file, arrayObject) {
 
 /**
  * This method add new json object to the array object.
+ * If jsonKey the jsonObjects parameter is used as array to apped the new object.
  * 
- * @param  {} arrayObject
+ * @param  {} jsonKey
+ * @param  {} jsonObjects
  * @param  {} newObject
  */
-function addObjectToArray(arrayObject, newObject) {
+function addObjectToArray(jsonKey, jsonObjects, newObject) {
+    let newArrayObject = jsonObjects;
+    let newArray = jsonKey ? jsonObjects[jsonKey] : jsonObjects;
 
+    return new Promise((fulfill, reject) => {
+        if (Array.isArray(newArray)) {
+            newArray.push(newObject);
+        }
+
+        fulfill(newArrayObject);
+    });
 }
 
 module.exports.getJsonFile = getJsonFile;
