@@ -100,7 +100,7 @@ function saveArrayObject(path, file, arrayObject) {
     let json = `${jsonPath}${file}.json`;
 
     return new Promise((fulfill, reject) => {
-        jsonfile.writeFile(json, jsonObject, (err) => {
+        jsonfile.writeFile(json, jsonObject, { spaces: 4 }, (err) => {
             if (err) reject(err);
             else fulfill(true);
         })
