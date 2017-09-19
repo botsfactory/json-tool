@@ -1,6 +1,6 @@
 {
   "name": "@botsfactory/json-tool",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tool to manage json recognizers.",
   "main": "index.js",
   "scripts": {
