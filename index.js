@@ -33,42 +33,33 @@ function getJsonFile(path, file) {
  */
 function getArrayObjectFilered(arrayObject, key, subkey, value) {
     let query = `${key}[**][*${subkey}=${value}]`;
+    let filteredJson = JSON.stringify(jsonQuery(query, { data: arrayObject }).value);
 
-    return new Promise((fulfill, reject) => {
-        let json = JSON.stringify(jsonQuery(query, { data: arrayObject }).value);
-        fulfill(json);
-    });
+    return filteredJson;
 }
 
 /**
  * This method return the array with the object updated with new value.
  * 
- * @param  {} arrayObject
+ * @param  {} jsonObject
  * @param  {} key
  * @param  {} subkey
  * @param  {} value
  * @param  {} newValue
  */
-function updateArrayObject(arrayObject, key, subkey, value, newValue) {
-    let jsonObjects = arrayObject[key];
+function updateArrayObject(jsonObject, key, subkey, value, newValue) {
+    let newJson = jsonObject[key];
 
-    return new Promise((fulfill, reject) => {
-        let newJson = jsonObjects.map((obj) => {
-            var newObj = obj;
+    newJson.map((obj) => {
+        if (obj[subkey] == value) {
+            obj[subkey] = newValue;
+        }
 
-            if (newObj[subkey] == value) {
-                newObj[subkey] == newValue;
-            }
-
-            return newObj;
-        });
-
-        let newJsonObj = {};
-        newJsonObj[subkey] = newJson;
-        fulfill(newJsonObj);
+        return obj;
     });
-}
 
+    return jsonObject;
+}
 /**
  * This method return the array with the object updated with new value.
  * Use dot notation to specify nested values.
@@ -82,29 +73,22 @@ function updateArrayObjectNested(arrayObject, path, value, newValue) {
     let arrContainer = path.split('.').shift();
     let jsonObjects = arrayObject[arrContainer];
 
-    return new Promise((fulfill, reject) => {
-        let newJson = jsonObjects.map((obj) => {
-            let newObj = obj;
-            let parts = path.split('.');
-            parts = parts.slice(1);
+    jsonObjects.map((obj) => {
+        let parts = path.split('.').slice(1);
 
-            while (parts.length > 1) {
-                obj = obj[parts[0]];
-                parts = parts.shift();
-            }
+        while (parts.length > 1) {
+            obj = obj[parts[0]];
+            parts = parts.shift();
+        }
 
-            if (parts.length > 0 && obj[parts[0]] == value) {
-                console.log('entra');
-                obj[parts[0]] = newValue;
-            }
+        if (parts.length > 0 && obj[parts[0]] == value) {
+            obj[parts[0]] = newValue;
+        }
 
-            return newObj;
-        });
-
-        let newJsonObj = arrayObject;
-        newJsonObj[arrContainer] = newJson;
-        fulfill(newJsonObj);
+        return obj;
     });
+
+    return arrayObject;
 }
 
 /**
@@ -128,16 +112,13 @@ function saveArrayObject(path, file, arrayObject) {
  * @param  {} newObject
  */
 function addObjectToArray(jsonKey, jsonObjects, newObject) {
-    let newArrayObject = jsonObjects;
     let newArray = jsonKey ? jsonObjects[jsonKey] : jsonObjects;
 
-    return new Promise((fulfill, reject) => {
-        if (Array.isArray(newArray)) {
-            newArray.push(newObject);
-        }
+    if (Array.isArray(newArray)) {
+        newArray.push(newObject);
+    }
 
-        fulfill(newArrayObject);
-    });
+    return newArray;
 }
 
 module.exports.getJsonFile = getJsonFile;
