@@ -100,7 +100,7 @@ function saveArrayObject(path, file, arrayObject) {
     let json = `${jsonPath}${file}.json`;
 
     return new Promise((fulfill, reject) => {
-        jsonfile.writeFile(json, jsonObject, { spaces: 4 }, (err) => {
+        jsonfile.writeFile(json, arrayObject, { spaces: 4 }, (err) => {
             if (err) reject(err);
             else fulfill(true);
         })
@@ -109,20 +109,40 @@ function saveArrayObject(path, file, arrayObject) {
 
 /**
  * This method add new json object to the array object.
- * If jsonKey the jsonObjects parameter is used as array to apped the new object.
+ * If the key is not null the jsonObjects parameter is
+ * used as array to apped the new object.
  * 
- * @param  {} jsonKey
+ * @param  {} key
  * @param  {} jsonObjects
  * @param  {} newObject
  */
-function addObjectToArray(jsonKey, jsonObjects, newObject) {
-    let newArray = jsonKey ? jsonObjects[jsonKey] : jsonObjects;
+function addObjectToArray(key, jsonObjects, newObject) {
+    let newArray = key ? jsonObjects[key] : jsonObjects;
 
     if (Array.isArray(newArray)) {
         newArray.push(newObject);
     }
 
     return newArray;
+}
+/**
+ * This method add an object to an array in a file.
+ * 'key' can be null if the file only contains an array.
+ * 
+ * @param  {} obj
+ * @param  {} key
+ * @param  {} file
+ * @param  {} path
+ */
+function addObjectToFile(obj, key, file, path) {
+    getJsonFile(path, file)
+        .then(result => {
+            let newJson = addObjectToArray(key, result, obj);
+            return newJson;
+        })
+        .then(result => {
+            saveArrayObject(path, file, result);
+        });
 }
 
 module.exports.getJsonFile = getJsonFile;
@@ -131,3 +151,4 @@ module.exports.updateArrayObject = updateArrayObject;
 module.exports.updateArrayObjectNested = updateArrayObjectNested;
 module.exports.saveArrayObject = saveArrayObject;
 module.exports.addObjectToArray = addObjectToArray;
+module.exports.addObjectToFile = addObjectToFile;
