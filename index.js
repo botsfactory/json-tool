@@ -82,28 +82,29 @@ function updateArrayObjectNested(arrayObject, path, value, newValue) {
     let arrContainer = path.split('.').shift();
     let jsonObjects = arrayObject[arrContainer];
 
-    let newJson = jsonObjects.map((obj) => {
-        let newObj = obj;
-        let parts = path.split('.');
-        parts = parts.slice(1);
+    return new Promise((fulfill, reject) => {
+        let newJson = jsonObjects.map((obj) => {
+            let newObj = obj;
+            let parts = path.split('.');
+            parts = parts.slice(1);
 
-        while (parts.length > 1) {
-            obj = obj[parts[0]];
-            parts = parts.shift();
-        }
+            while (parts.length > 1) {
+                obj = obj[parts[0]];
+                parts = parts.shift();
+            }
 
-        if (parts.length > 0 && obj[parts[0]] == value) {
-            console.log('entra');
-            obj[parts[0]] = newValue;
-        }
+            if (parts.length > 0 && obj[parts[0]] == value) {
+                console.log('entra');
+                obj[parts[0]] = newValue;
+            }
 
-        return newObj;
+            return newObj;
+        });
+
+        let newJsonObj = arrayObject;
+        newJsonObj[arrContainer] = newJson;
+        fulfill(newJsonObj);
     });
-
-    let newJsonObj = arrayObject;
-    newJsonObj[arrContainer] = newJson;
-    return newJsonObj;
-
 }
 
 /**
