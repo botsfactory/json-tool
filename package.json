@@ -1,5 +1,5 @@
 {
-  "name": "@botsfactory/json-recognizer-tool",
+  "name": "@botsfactory/json-tool",
   "version": "0.0.1",
   "description": "Tool to manage json recognizers.",
   "main": "index.js",
