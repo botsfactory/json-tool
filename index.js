@@ -20,7 +20,8 @@ function getJsonFile(path, file) {
 }
 
 /**
- * This method return an array of objects filtered by key, subkey and value.
+ * This method return an array of objects filtered by key,
+ * subkey and value.
  * 
  * @param  {} arrayObject
  * @param  {} key
@@ -88,26 +89,6 @@ function updateArrayObjectNested(arrayObject, path, value, newValue) {
 }
 
 /**
- * This method update the specified file with the information in the array object.
- * The file is created if not exist.
- * 
- * @param  {} path
- * @param  {} file
- * @param  {} arrayObject
- */
-function saveArrayObject(path, file, arrayObject) {
-    let jsonPath = path || '';
-    let json = `${jsonPath}${file}.json`;
-
-    return new Promise((fulfill, reject) => {
-        jsonfile.writeFile(json, arrayObject, { spaces: 4 }, (err) => {
-            if (err) reject(err);
-            else fulfill(true);
-        })
-    });
-}
-
-/**
  * This method add new json object to the array object.
  * If the key is not null the jsonObjects parameter is
  * used as array to apped the new object.
@@ -123,8 +104,29 @@ function addObjectToArray(key, jsonObjects, newObject) {
         newArray.push(newObject);
     }
 
-    return newArray;
+    return jsonObjects;
 }
+
+/**
+ * This method update the specified file with the information
+ * in the array object. The file is created if not exist.
+ * 
+ * @param  {} path
+ * @param  {} file
+ * @param  {} arrayObject
+ */
+function saveArrayObject(path, file, arrayObject) {
+    let jsonPath = path || '';
+    let json = `${jsonPath}${file}.json`;
+
+    return new Promise((fulfill, reject) => {
+        jsonfile.writeFile(json, arrayObject, { spaces: 4 }, (err) => {
+            if (err) reject(err);
+            else fulfill('OK');
+        })
+    });
+}
+
 /**
  * This method add an object to an array in a file.
  * 'key' can be null if the file only contains an array.
@@ -135,13 +137,16 @@ function addObjectToArray(key, jsonObjects, newObject) {
  * @param  {} path
  */
 function addObjectToFile(obj, key, file, path) {
-    getJsonFile(path, file)
-        .then(result => {
-            let newJson = addObjectToArray(key, result, obj);
+    return getJsonFile(path, file)
+        .then(json => {
+            let newJson = addObjectToArray(key, json, obj);
             return newJson;
         })
-        .then(result => {
-            saveArrayObject(path, file, result);
+        .then(newJson => {
+            return saveArrayObject(path, file, newJson)
+                .then(result => {
+                    return result;
+                });
         });
 }
 
