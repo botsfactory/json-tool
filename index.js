@@ -11,10 +11,6 @@ function getJsonFile(path, file) {
     let jsonPath = path || '';
     let json = `${jsonPath}${file}.json`;
 
-    jsonfile.readFile(json, (err, jsonObj) => {
-        return jsonObj;
-    })
-
     return new Promise((fulfill, reject) => {
         jsonfile.readFile(json, (err, jsonObj) => {
             if (err) reject(err);
@@ -100,7 +96,15 @@ function updateArrayObjectNested(arrayObject, path, value, newValue) {
  * @param  {} arrayObject
  */
 function saveArrayObject(path, file, arrayObject) {
+    let jsonPath = path || '';
+    let json = `${jsonPath}${file}.json`;
 
+    return new Promise((fulfill, reject) => {
+        jsonfile.writeFile(json, jsonObject, (err) => {
+            if (err) reject(err);
+            else fulfill(true);
+        })
+    });
 }
 
 /**
