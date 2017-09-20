@@ -204,6 +204,7 @@ function addObjectToFile(obj, keyPath, file, filePath) {
 }
 
 module.exports.getJsonFile = getJsonFile;
+module.exports.getJsonFileSync = getJsonFileSync;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
 module.exports.updateArrayObject = updateArrayObject;
 module.exports.addObjectToArray = addObjectToArray;
