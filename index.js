@@ -21,6 +21,19 @@ function getJsonFile(path, file) {
 }
 
 /**
+ * This method read a json file and return it as JS Object synchronously.
+ * 
+ * @param  {} path
+ * @param  {} file
+ */
+function getJsonFileSync(path, file) {
+    let jsonPath = path || '';
+    let json = `${jsonPath}${file}.json`;
+
+    return jsonfile.readFileSync(json);
+}
+
+/**
  * This method return an array of objects filtered by key,
  * subkey and value.
  * 
