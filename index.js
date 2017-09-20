@@ -1,8 +1,9 @@
 const jsonfile = require('jsonfile');
 const jsonQuery = require('json-query');
+const _ = require('lodash');
 
 /**
- * This method read a json file and return a JS Object.
+ * This method read a json file and return it as JS Object.
  * 
  * @param  {} path
  * @param  {} file
@@ -23,14 +24,14 @@ function getJsonFile(path, file) {
  * This method return an array of objects filtered by key,
  * subkey and value.
  * 
- * @param  {} arrayObject
+ * @param  {} obj
  * @param  {} key
  * @param  {} subkey
  * @param  {} value
  */
-function getArrayObjectFilered(arrayObject, key, subkey, value) {
+function getArrayObjectFilered(obj, key, subkey, value) {
     let query = `${key}[**][*${subkey}=${value}]`;
-    let filteredJson = JSON.stringify(jsonQuery(query, { data: arrayObject }).value);
+    let filteredJson = JSON.stringify(jsonQuery(query, { data: obj }).value);
 
     return filteredJson;
 }
@@ -44,8 +45,8 @@ function getArrayObjectFilered(arrayObject, key, subkey, value) {
  * @param  {} value
  * @param  {} newValue
  */
-function updateArrayObject(jsonObject, key, subkey, value, newValue) {
-    let newJson = jsonObject[key];
+function updateArrayObject(obj, key, subkey, value, newValue) {
+    let newJson = obj[key];
 
     newJson.map((obj) => {
         if (obj[subkey] == value) {
@@ -55,56 +56,95 @@ function updateArrayObject(jsonObject, key, subkey, value, newValue) {
         return obj;
     });
 
-    return jsonObject;
+    return obj;
 }
+
 /**
- * This method return the array with the object updated with new value.
- * Use dot notation to specify nested values.
+ * This method go to path and return the contained object.
+ * Use dot notation to specify the path.
  * 
- * @param  {} arrayObject
  * @param  {} path
- * @param  {} value
- * @param  {} newValue
+ * @param  {} obj
  */
-function updateArrayObjectNested(arrayObject, path, value, newValue) {
-    let arrContainer = path.split('.').shift();
-    let jsonObjects = arrayObject[arrContainer];
+function goToPositon(path, obj) {
+    if (path) {
+        let parts = path.split('.');
 
-    jsonObjects.map((obj) => {
-        let parts = path.split('.').slice(1);
+        while (parts.length) {
+            let key = parts.shift();
 
-        while (parts.length > 1) {
-            obj = obj[parts[0]];
-            parts = parts.shift();
+            if (obj[key] == null) {
+                obj[key] = {};
+                obj = obj[key];
+
+            } else if (key in obj) {
+                obj = obj[key];
+
+            } else {
+                throw new Error(`Path not found: ${path}`);
+            }
         }
-
-        if (parts.length > 0 && obj[parts[0]] == value) {
-            obj[parts[0]] = newValue;
-        }
-
-        return obj;
-    });
-
-    return arrayObject;
-}
-
-/**
- * This method add new json object to the array object.
- * If the key is not null the jsonObjects parameter is
- * used as array to apped the new object.
- * 
- * @param  {} key
- * @param  {} jsonObjects
- * @param  {} newObject
- */
-function addObjectToArray(key, jsonObjects, newObject) {
-    let newArray = key ? jsonObjects[key] : jsonObjects;
-
-    if (Array.isArray(newArray)) {
-        newArray.push(newObject);
     }
 
-    return jsonObjects;
+    return obj;
+}
+
+/**
+ * This method add a new object to an array in a JS object.
+ * You can add new object to array directly if path is null.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} path
+ * @param  {} obj
+ * @param  {} newObj
+ */
+function addObjectToArray(path, obj, newObj) {
+    let clonedObj = _.cloneDeep(obj);
+    let parentObj = path ? goToPositon(path, clonedObj) : clonedObj;
+
+    if (Array.isArray(parentObj)) {
+        parentObj.push(newObj);
+    }
+
+    return clonedObj;
+}
+
+/**
+ * This method return the object updated with the new value.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} obj
+ * @param  {} path
+ * @param  {} currentValue
+ * @param  {} newValue
+ */
+function updateObjectInArray(path, obj, currentValue, newValue) {
+    let clonedObj = _.cloneDeep(obj);
+    let parts = path.split('.');
+    let parentPath = '';
+    let key = '';
+
+    if (parts.length > 1) {
+        parentPath = parts.slice(0, -1).join('.');
+        key = parts.slice(-1)[0];
+    } else {
+        parentPath = path;
+        key = path;
+    }
+
+    let parentObj = goToPositon(parentPath, clonedObj);
+
+    if (Array.isArray(parentObj)) {
+        parentObj.map((obj) => {
+            if (key in obj && obj[key] == currentValue) {
+                obj[key] = newValue;
+            }
+
+            return obj;
+        });
+    }
+
+    return clonedObj;
 }
 
 /**
@@ -128,22 +168,22 @@ function saveArrayObject(path, file, arrayObject) {
 }
 
 /**
- * This method add an object to an array in a file.
+ * This method add an object to an array in a json file.
  * 'key' can be null if the file only contains an array.
  * 
  * @param  {} obj
- * @param  {} key
+ * @param  {} keyPath
  * @param  {} file
- * @param  {} path
+ * @param  {} filePath
  */
-function addObjectToFile(obj, key, file, path) {
-    return getJsonFile(path, file)
+function addObjectToFile(obj, keyPath, file, filePath) {
+    return getJsonFile(filePath, file)
         .then(json => {
-            let newJson = addObjectToArray(key, json, obj);
+            let newJson = addObjectToArray(keyPath, json, obj);
             return newJson;
         })
-        .then(newJson => {
-            return saveArrayObject(path, file, newJson)
+        .then(jsonToSave => {
+            return saveArrayObject(filePath, file, jsonToSave)
                 .then(result => {
                     return result;
                 });
@@ -153,7 +193,8 @@ function addObjectToFile(obj, key, file, path) {
 module.exports.getJsonFile = getJsonFile;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
 module.exports.updateArrayObject = updateArrayObject;
-module.exports.updateArrayObjectNested = updateArrayObjectNested;
-module.exports.saveArrayObject = saveArrayObject;
 module.exports.addObjectToArray = addObjectToArray;
+module.exports.goToPositon = goToPositon;
+module.exports.updateObjectInArray = updateObjectInArray;
+module.exports.saveArrayObject = saveArrayObject;
 module.exports.addObjectToFile = addObjectToFile;
