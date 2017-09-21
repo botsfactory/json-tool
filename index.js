@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 /**
  * This method read a json file and return it as JS Object.
+ * Use '/' in the path to specify the rute.
  * 
  * @param  {} path
  * @param  {} file
@@ -163,6 +164,7 @@ function updateObjectInArray(path, obj, currentValue, newValue) {
 /**
  * This method update the specified file with the information
  * in the array object. The file is created if not exist.
+ * Use dot notation to specify the path.
  * 
  * @param  {} path
  * @param  {} file
@@ -182,7 +184,7 @@ function saveArrayObject(path, file, arrayObject) {
 
 /**
  * This method add an object to an array in a json file.
- * 'key' can be null if the file only contains an array.
+ * Use dot notation to specify the path(keyPath).
  * 
  * @param  {} obj
  * @param  {} keyPath
@@ -203,12 +205,39 @@ function addObjectToFile(obj, keyPath, file, filePath) {
         });
 }
 
+/**
+ * This method update specific value for a key in a json.
+ * Use dot notation to specify the path(keyPath).
+ * 
+ * @param  {} value
+ * @param  {} newValue
+ * @param  {} keyPath
+ * @param  {} file
+ * @param  {} filePath
+ */
+function updateObjectInFile(value, newValue, keyPath, file, filePath) {
+    return getJsonFile(filePath, file)
+        .then(json => {
+            let newJson = updateObjectInArray(keyPath, json, value, newValue);
+            return newJson;
+        })
+        .then(jsonToSave => {
+            return saveArrayObject(filePath, file, jsonToSave)
+                .then(result => {
+                    return result;
+                });
+        });
+}
+
+module.exports.goToPositon = goToPositon;
 module.exports.getJsonFile = getJsonFile;
 module.exports.getJsonFileSync = getJsonFileSync;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
-module.exports.updateArrayObject = updateArrayObject;
+
 module.exports.addObjectToArray = addObjectToArray;
-module.exports.goToPositon = goToPositon;
-module.exports.updateObjectInArray = updateObjectInArray;
-module.exports.saveArrayObject = saveArrayObject;
 module.exports.addObjectToFile = addObjectToFile;
+
+module.exports.updateArrayObject = updateArrayObject;
+module.exports.updateObjectInArray = updateObjectInArray;
+module.exports.updateObjectInFile = updateObjectInFile;
+module.exports.saveArrayObject = saveArrayObject;
