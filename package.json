@@ -1,7 +1,7 @@
 {
   "name": "@botsfactory/json-tool",
   "version": "0.0.6",
-  "description": "Tool to manage json recognizers.",
+  "description": "Tool to manage JSON files.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

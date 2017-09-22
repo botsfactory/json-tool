@@ -124,6 +124,27 @@ function addObjectToArray(path, obj, newObj) {
 }
 
 /**
+ * This method delete a new object from an array in a JS object.
+ * 'obj' can be an JS object or directly an array.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} path
+ * @param  {} obj
+ * @param  {} newObj
+ */
+function deleteObjectFromArray(path, obj, objToDelete) {
+    let clonedObj = _.cloneDeep(obj);
+    let parentObj = path ? goToPositon(path, clonedObj) : clonedObj;
+
+    if (Array.isArray(parentObj)) {
+        let objIndex = _.findIndex(parentObj, objToDelete);
+        parentObj.splice(objIndex, 1);
+    }
+
+    return clonedObj;
+}
+
+/**
  * This method return the object updated with the new value.
  * Use dot notation to specify the path.
  * 
@@ -229,7 +250,30 @@ function updateObjectInFile(value, newValue, keyPath, file, filePath) {
         });
 }
 
-module.exports.goToPositon = goToPositon;
+/**
+ * This method delete specific object for a key in a json.
+ * Use dot notation to specify the path(keyPath).
+ * 
+ * @param  {} value
+ * @param  {} newValue
+ * @param  {} keyPath
+ * @param  {} file
+ * @param  {} filePath
+ */
+function deleteObjectFromFile(obj, keyPath, file, filePath) {
+    return getJsonFile(filePath, file)
+        .then(json => {
+            let newJson = deleteObjectFromArray(keyPath, json, objToDelete);
+            return newJson;
+        })
+        .then(jsonToSave => {
+            return saveArrayObject(filePath, file, jsonToSave)
+                .then(result => {
+                    return result;
+                });
+        });
+}
+
 module.exports.getJsonFile = getJsonFile;
 module.exports.getJsonFileSync = getJsonFileSync;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
@@ -240,4 +284,9 @@ module.exports.addObjectToFile = addObjectToFile;
 module.exports.updateArrayObject = updateArrayObject;
 module.exports.updateObjectInArray = updateObjectInArray;
 module.exports.updateObjectInFile = updateObjectInFile;
+
+module.exports.deleteObjectFromArray = deleteObjectFromArray;
+module.exports.deleteObjectFromFile = deleteObjectFromFile;
+
+module.exports.goToPositon = goToPositon;
 module.exports.saveArrayObject = saveArrayObject;
