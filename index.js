@@ -3,6 +3,48 @@ const jsonQuery = require('json-query');
 const _ = require('lodash');
 
 /**
+ * This method go to path and return the contained object.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} path
+ * @param  {} obj
+ */
+function goToPositon(path, obj) {
+    if (path) {
+        let parts = path.split('.');
+
+        while (parts.length) {
+            let key = parts.shift();
+
+            if (obj[key] == null) {
+                obj[key] = {};
+                obj = obj[key];
+
+            } else if (key in obj) {
+                obj = obj[key];
+
+            } else {
+                throw new Error(`Path not found: ${path}`);
+            }
+        }
+    }
+
+    return obj;
+}
+
+/**
+ * This method return the object id in the array.
+ * 
+ * @param  {} obj
+ * @param  {} arr
+ */
+function getObjectIndex(id, arr) {
+    return _.findIndex(arr, (obj) => {
+        return obj.id == id;
+    });
+}
+
+/**
  * This method read a json file and return it as JS Object.
  * Use '/' in the path to specify the rute.
  * 
@@ -51,6 +93,22 @@ function getArrayObjectFilered(obj, key, subkey, value) {
 }
 
 /**
+ * This method return an object filtered by id from an array.
+ * 
+ * @param  {} obj
+ * @param  {} key
+ * @param  {} subkey
+ * @param  {} value
+ */
+function getObjectById(id, path, obj) {
+    let jsonPath = path || '';
+    let parentObj = path ? goToPositon(path, obj) : obj;
+    let index = getObjectIndex(id, parentObj);
+
+    return parentObj[index];
+}
+
+/**
  * This method return the array with the object updated with new value.
  * 
  * @param  {} jsonObject
@@ -69,36 +127,6 @@ function updateArrayObject(obj, key, subkey, value, newValue) {
 
         return obj;
     });
-
-    return obj;
-}
-
-/**
- * This method go to path and return the contained object.
- * Use dot notation to specify the path.
- * 
- * @param  {} path
- * @param  {} obj
- */
-function goToPositon(path, obj) {
-    if (path) {
-        let parts = path.split('.');
-
-        while (parts.length) {
-            let key = parts.shift();
-
-            if (obj[key] == null) {
-                obj[key] = {};
-                obj = obj[key];
-
-            } else if (key in obj) {
-                obj = obj[key];
-
-            } else {
-                throw new Error(`Path not found: ${path}`);
-            }
-        }
-    }
 
     return obj;
 }
@@ -274,9 +302,29 @@ function deleteObjectFromFile(obj, keyPath, file, filePath) {
         });
 }
 
+/**
+ * This method delete specific object for a key in a json.
+ * Use dot notation to specify the path(keyPath).
+ * 
+ * @param  {} value
+ * @param  {} newValue
+ * @param  {} keyPath
+ * @param  {} file
+ * @param  {} filePath
+ */
+function getObjectByIdFromFile(id, keyPath, file, filePath) {
+    return getJsonFile(filePath, file)
+        .then(json => {
+            let newJson = getObjectById(id, keyPath, json);
+            return newJson;
+        });
+}
+
 module.exports.getJsonFile = getJsonFile;
 module.exports.getJsonFileSync = getJsonFileSync;
 module.exports.getArrayObjectFilered = getArrayObjectFilered;
+module.exports.getObjectById = getObjectById;
+module.exports.getObjectByIdFromFile = getObjectByIdFromFile;
 
 module.exports.addObjectToArray = addObjectToArray;
 module.exports.addObjectToFile = addObjectToFile;
@@ -290,3 +338,36 @@ module.exports.deleteObjectFromFile = deleteObjectFromFile;
 
 module.exports.goToPositon = goToPositon;
 module.exports.saveArrayObject = saveArrayObject;
+
+/*
+let obj = {
+    "intents": [
+        {
+            "id": "cj7w9genx000176jxn0ges7rs",
+            "regex": "01",
+            "intent": "--"
+        },
+        {
+            "id": "cj7w9hzfb000276jxhuc21qrv",
+            "regex": "02",
+            "intent": "--"
+        },
+        {
+            "id": "cj7w9iczm000376jx69n09c5r",
+            "regex": "04",
+            "intent": "--"
+        }
+    ]
+};
+
+console.log(getObjectById('cj7w9genx000176jxn0ges7rs', 'intents', obj));
+
+*/
+/*
+
+getObjectByIdFromFile('cj7w9genx000176jxn0ges7rs', 'intents', 'example', null)
+    .then(result => {
+        console.log(result);
+    });
+
+    */
