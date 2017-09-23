@@ -35,7 +35,7 @@ function goToPositon(path, obj) {
 /**
  * This method return the object id in the array.
  * 
- * @param  {} obj
+ * @param  {} id
  * @param  {} arr
  */
 function getObjectIndex(id, arr) {
@@ -77,28 +77,26 @@ function getJsonFileSync(path, file) {
 }
 
 /**
- * This method return an array of objects filtered by key,
- * subkey and value.
+ * This method return an array of objects filtered by json in array/object.
+ * You can search in the array directly if path is null.
  * 
+ * @param  {} json
+ * @param  {} path
  * @param  {} obj
- * @param  {} key
- * @param  {} subkey
- * @param  {} value
  */
-function getArrayObjectFilered(obj, key, subkey, value) {
-    let query = `${key}[**][*${subkey}=${value}]`;
-    let filteredJson = JSON.stringify(jsonQuery(query, { data: obj }).value);
+function getArrayObjectFilered(json, path, obj) {
+    let jsonPath = path || '';
+    let parentObj = path ? goToPositon(path, obj) : obj;
 
-    return filteredJson;
+    return _.filter(parentObj, json);
 }
 
 /**
  * This method return an object filtered by id from an array.
  * 
+ * @param  {} id
+ * @param  {} path
  * @param  {} obj
- * @param  {} key
- * @param  {} subkey
- * @param  {} value
  */
 function getObjectById(id, path, obj) {
     let jsonPath = path || '';
@@ -106,29 +104,6 @@ function getObjectById(id, path, obj) {
     let index = getObjectIndex(id, parentObj);
 
     return parentObj[index];
-}
-
-/**
- * This method return the array with the object updated with new value.
- * 
- * @param  {} jsonObject
- * @param  {} key
- * @param  {} subkey
- * @param  {} value
- * @param  {} newValue
- */
-function updateArrayObject(obj, key, subkey, value, newValue) {
-    let newJson = obj[key];
-
-    newJson.map((obj) => {
-        if (obj[subkey] == value) {
-            obj[subkey] = newValue;
-        }
-
-        return obj;
-    });
-
-    return obj;
 }
 
 /**
@@ -152,13 +127,13 @@ function addObjectToArray(path, obj, newObj) {
 }
 
 /**
- * This method delete a new object from an array in a JS object.
+ * This method delete an object from an array in a JS object.
  * 'obj' can be an JS object or directly an array.
  * Use dot notation to specify the path.
  * 
+ * @param  {} id
  * @param  {} path
  * @param  {} obj
- * @param  {} newObj
  */
 function deleteObjectFromArray(id, path, obj) {
     let clonedObj = _.cloneDeep(obj);
@@ -176,10 +151,10 @@ function deleteObjectFromArray(id, path, obj) {
  * This method return the object updated with the new value.
  * Use dot notation to specify the path.
  * 
- * @param  {} obj
  * @param  {} path
- * @param  {} currentValue
- * @param  {} newValue
+ * @param  {} obj
+ * @param  {} id
+ * @param  {} value
  */
 function updateObjectInArray(path, obj, id, value) {
     let clonedObj = _.cloneDeep(obj);
@@ -229,7 +204,7 @@ function saveArrayObject(path, file, arrayObject) {
 }
 
 /**
- * This method add an object to an array in a json file.
+ * This method add an object to an array in a JSON file.
  * Use dot notation to specify the path(keyPath).
  * 
  * @param  {} obj
@@ -252,11 +227,11 @@ function addObjectToFile(obj, keyPath, file, filePath) {
 }
 
 /**
- * This method update specific value for a key in a json.
+ * This method update specific value for a key in a JSON file.
  * Use dot notation to specify the path(keyPath).
  * 
+ * @param  {} id
  * @param  {} value
- * @param  {} newValue
  * @param  {} keyPath
  * @param  {} file
  * @param  {} filePath
@@ -276,11 +251,10 @@ function updateObjectInFile(id, value, keyPath, file, filePath) {
 }
 
 /**
- * This method delete specific object for a key in a json.
+ * This method delete specific object in a JSON file.
  * Use dot notation to specify the path(keyPath).
  * 
- * @param  {} value
- * @param  {} newValue
+ * @param  {} id
  * @param  {} keyPath
  * @param  {} file
  * @param  {} filePath
@@ -300,11 +274,10 @@ function deleteObjectFromFile(id, keyPath, file, filePath) {
 }
 
 /**
- * This method delete specific object for a key in a json.
+ * This method get specific object by path and id from a JSON file.
  * Use dot notation to specify the path(keyPath).
  * 
- * @param  {} value
- * @param  {} newValue
+ * @param  {} id
  * @param  {} keyPath
  * @param  {} file
  * @param  {} filePath
@@ -326,7 +299,6 @@ module.exports.getObjectByIdFromFile = getObjectByIdFromFile;
 module.exports.addObjectToArray = addObjectToArray;
 module.exports.addObjectToFile = addObjectToFile;
 
-module.exports.updateArrayObject = updateArrayObject;
 module.exports.updateObjectInArray = updateObjectInArray;
 module.exports.updateObjectInFile = updateObjectInFile;
 
