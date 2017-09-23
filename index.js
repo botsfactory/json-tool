@@ -160,13 +160,13 @@ function addObjectToArray(path, obj, newObj) {
  * @param  {} obj
  * @param  {} newObj
  */
-function deleteObjectFromArray(path, obj, objToDelete) {
+function deleteObjectFromArray(id, path, obj) {
     let clonedObj = _.cloneDeep(obj);
     let parentObj = path ? goToPositon(path, clonedObj) : clonedObj;
 
     if (Array.isArray(parentObj)) {
-        let objIndex = _.findIndex(parentObj, objToDelete);
-        parentObj.splice(objIndex, 1);
+        let index = getObjectIndex(id, parentObj);
+        parentObj.splice(index, 1);
     }
 
     return clonedObj;
@@ -181,7 +181,7 @@ function deleteObjectFromArray(path, obj, objToDelete) {
  * @param  {} currentValue
  * @param  {} newValue
  */
-function updateObjectInArray(path, obj, currentValue, newValue) {
+function updateObjectInArray(path, obj, id, value) {
     let clonedObj = _.cloneDeep(obj);
     let parts = path.split('.');
     let parentPath = '';
@@ -195,19 +195,16 @@ function updateObjectInArray(path, obj, currentValue, newValue) {
         key = path;
     }
 
-    let parentObj = goToPositon(parentPath, clonedObj);
+    let parentObj = goToPositon(parentPath, obj);
 
     if (Array.isArray(parentObj)) {
-        parentObj.map((obj) => {
-            if (key in obj && obj[key] == currentValue) {
-                obj[key] = newValue;
-            }
-
-            return obj;
-        });
+        let index = getObjectIndex(id, parentObj);
+        if (index != -1) {
+            parentObj[index][key] = value;
+        }
     }
 
-    return clonedObj;
+    return obj;
 }
 
 /**
@@ -264,10 +261,10 @@ function addObjectToFile(obj, keyPath, file, filePath) {
  * @param  {} file
  * @param  {} filePath
  */
-function updateObjectInFile(value, newValue, keyPath, file, filePath) {
+function updateObjectInFile(id, value, keyPath, file, filePath) {
     return getJsonFile(filePath, file)
         .then(json => {
-            let newJson = updateObjectInArray(keyPath, json, value, newValue);
+            let newJson = updateObjectInArray(keyPath, json, id, value);
             return newJson;
         })
         .then(jsonToSave => {
@@ -288,10 +285,10 @@ function updateObjectInFile(value, newValue, keyPath, file, filePath) {
  * @param  {} file
  * @param  {} filePath
  */
-function deleteObjectFromFile(obj, keyPath, file, filePath) {
+function deleteObjectFromFile(id, keyPath, file, filePath) {
     return getJsonFile(filePath, file)
         .then(json => {
-            let newJson = deleteObjectFromArray(keyPath, json, objToDelete);
+            let newJson = deleteObjectFromArray(id, keyPath, json);
             return newJson;
         })
         .then(jsonToSave => {
@@ -338,36 +335,3 @@ module.exports.deleteObjectFromFile = deleteObjectFromFile;
 
 module.exports.goToPositon = goToPositon;
 module.exports.saveArrayObject = saveArrayObject;
-
-/*
-let obj = {
-    "intents": [
-        {
-            "id": "cj7w9genx000176jxn0ges7rs",
-            "regex": "01",
-            "intent": "--"
-        },
-        {
-            "id": "cj7w9hzfb000276jxhuc21qrv",
-            "regex": "02",
-            "intent": "--"
-        },
-        {
-            "id": "cj7w9iczm000376jx69n09c5r",
-            "regex": "04",
-            "intent": "--"
-        }
-    ]
-};
-
-console.log(getObjectById('cj7w9genx000176jxn0ges7rs', 'intents', obj));
-
-*/
-/*
-
-getObjectByIdFromFile('cj7w9genx000176jxn0ges7rs', 'intents', 'example', null)
-    .then(result => {
-        console.log(result);
-    });
-
-    */
