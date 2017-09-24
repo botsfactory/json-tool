@@ -1,0 +1,9 @@
+{
+    "intents": [
+        {
+            "id": "cj7w9hzfb000276jxhuc21qrv",
+            "regex": "/Hi/",
+            "intent": "greeting"
+        }
+    ]
+}

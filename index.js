@@ -38,7 +38,7 @@ function goToPositon(path, obj) {
  * @param  {} id
  * @param  {} arr
  */
-function getObjectIndex(id, arr) {
+function getObjectIndexById(id, arr) {
     return _.findIndex(arr, (obj) => {
         return obj.id == id;
     });
@@ -101,7 +101,7 @@ function getArrayObjectFilered(json, path, obj) {
 function getObjectById(id, path, obj) {
     let jsonPath = path || '';
     let parentObj = path ? goToPositon(path, obj) : obj;
-    let index = getObjectIndex(id, parentObj);
+    let index = getObjectIndexById(id, parentObj);
 
     return parentObj[index];
 }
@@ -140,7 +140,7 @@ function deleteObjectFromArray(id, path, obj) {
     let parentObj = path ? goToPositon(path, clonedObj) : clonedObj;
 
     if (Array.isArray(parentObj)) {
-        let index = getObjectIndex(id, parentObj);
+        let index = getObjectIndexById(id, parentObj);
         parentObj.splice(index, 1);
     }
 
@@ -173,7 +173,7 @@ function updateObjectInArray(path, obj, id, value) {
     let parentObj = goToPositon(parentPath, obj);
 
     if (Array.isArray(parentObj)) {
-        let index = getObjectIndex(id, parentObj);
+        let index = getObjectIndexById(id, parentObj);
         if (index != -1) {
             parentObj[index][key] = value;
         }
@@ -305,5 +305,6 @@ module.exports.updateObjectInFile = updateObjectInFile;
 module.exports.deleteObjectFromArray = deleteObjectFromArray;
 module.exports.deleteObjectFromFile = deleteObjectFromFile;
 
+module.exports.getObjectIndexById = getObjectIndexById;
 module.exports.goToPositon = goToPositon;
 module.exports.saveArrayObject = saveArrayObject;
