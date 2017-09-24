@@ -34,10 +34,13 @@ describe('Add object to array.', () => {
     });
 });
 
-/*
+/* 
+
+*** PENDING TO SOLVE ISSUE WHEN TRY TO DELETE TE JSON COPY.***
+
 describe('Add object to a JSON file.', () => {
 
-    it('Should add an object to array in a file.', (done) => {
+    it('Should add an object to array in a JSON file.', (done) => {
         shell.cp('__tests__/ex-1obj.json', '__tests__/ex-1obj_copy.json');
 
         jsonTool.addObjectToFile(exampleObj2.intents[1], 'intents', 'ex-1obj_copy', '__tests__/')
@@ -52,4 +55,6 @@ describe('Add object to a JSON file.', () => {
                 done();
             });
     });
-});*/
+});
+
+*/
