@@ -107,6 +107,26 @@ function getObjectById(id, path, obj) {
 }
 
 /**
+ * This method replace the object with the specified
+ * id for the new object.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} id
+ * @param  {} path
+ * @param  {} newObj
+ * @param  {} jsonObj
+ */
+function updateObjectInArray(id, path, newObj, jsonObj) {
+    let clonedObj = _.cloneDeep(jsonObj);
+    let parentObj = path ? goToPositon(path, jsonObj) : clonedObj;
+
+    parentObj = deleteObjectFromArray(id, path, jsonObj);
+    parentObj = addObjectToArray(path, parentObj, newObj);
+
+    return parentObj;
+}
+
+/**
  * This method add a new object to an array in a JS object.
  * You can add new object to array directly if path is null.
  * Use dot notation to specify the path.
@@ -151,12 +171,12 @@ function deleteObjectFromArray(id, path, obj) {
  * This method return the object updated with the new value.
  * Use dot notation to specify the path.
  * 
- * @param  {} path
- * @param  {} obj
  * @param  {} id
+ * @param  {} path
  * @param  {} value
+ * @param  {} obj
  */
-function updateObjectInArray(path, obj, id, value) {
+function updateValueInArray(id, path, value, obj) {
     let clonedObj = _.cloneDeep(obj);
     let parts = path.split('.');
     let parentPath = '';
@@ -227,6 +247,30 @@ function addObjectToFile(obj, keyPath, file, filePath) {
 }
 
 /**
+ * This method update specific object for an ID in a JSON file.
+ * Use dot notation to specify the path(keyPath).
+ * 
+ * @param  {} id
+ * @param  {} newObj
+ * @param  {} keyPath
+ * @param  {} file
+ * @param  {} filePath
+ */
+function updateObjectInFile(id, newObj, keyPath, file, filePath) {
+    return getJsonFile(filePath, file)
+        .then(json => {
+            let newJson = updateObjectInArray(id, keyPath, newObj, json);
+            return newJson;
+        })
+        .then(jsonToSave => {
+            return saveArrayObject(filePath, file, jsonToSave)
+                .then(result => {
+                    return result;
+                });
+        });
+}
+
+/**
  * This method update specific value for a key in a JSON file.
  * Use dot notation to specify the path(keyPath).
  * 
@@ -236,10 +280,10 @@ function addObjectToFile(obj, keyPath, file, filePath) {
  * @param  {} file
  * @param  {} filePath
  */
-function updateObjectInFile(id, value, keyPath, file, filePath) {
+function updateValueInFile(id, value, keyPath, file, filePath) {
     return getJsonFile(filePath, file)
         .then(json => {
-            let newJson = updateObjectInArray(keyPath, json, id, value);
+            let newJson = updateValueInArray(id, keyPath, value, json);
             return newJson;
         })
         .then(jsonToSave => {
@@ -301,6 +345,8 @@ module.exports.addObjectToFile = addObjectToFile;
 
 module.exports.updateObjectInArray = updateObjectInArray;
 module.exports.updateObjectInFile = updateObjectInFile;
+module.exports.updateValueInArray = updateValueInArray;
+module.exports.updateValueInFile = updateValueInFile;
 
 module.exports.deleteObjectFromArray = deleteObjectFromArray;
 module.exports.deleteObjectFromFile = deleteObjectFromFile;
