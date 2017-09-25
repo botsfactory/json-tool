@@ -1,6 +1,5 @@
 const jsonTool = require('../index');
 const shell = require('shelljs');
-const async = require('async');
 
 let exampleObj = {
     intents: [
@@ -35,28 +34,18 @@ describe('Delete object in array.', () => {
     });
 });
 
-/* 
-
-*** PENDING TO SOLVE ISSUE WHEN TRY TO DELETE TE JSON COPY.***
-
 describe('Delte object in a JSON file.', () => {
 
-    it('Should delete an object in an array in a JSON file.', (done) => {
+    it('Should delete an object in an array in a JSON file.', async (done) => {
         shell.cp('__tests__/ex-2objs.json', '__tests__/ex-2objs_copy.json');
 
-        jsonTool.deleteObjectFromFile('123gryr78mghi456sfgajq234',  'intents', 'ex-2objs_copy', '__tests__/')
-            .then(() => {
-                jsonTool.getJsonFile('__tests__/', 'ex-1obj').then((file) => {
-                    jsonTool.getJsonFile('__tests__/', 'ex-2objs_copy').then(fileUpdated => {
-                        expect(fileUpdated).toEqual(file);
-                    })
-                });
+        let json = await jsonTool.deleteObjectFromFile('123gryr78mghi456sfgajq234',  'intents', 'ex-2objs_copy', '__tests__/');
+        let file = await jsonTool.getJsonFile('__tests__/', 'ex-1obj');
+        let fileUpdated = await jsonTool.getJsonFile('__tests__/', 'ex-2objs_copy');
 
-            }).then(() => {
-                shell.rm('__tests__/ex-2objs_copy.json');
-                done();
-            });
+        expect(fileUpdated).toEqual(file);
+
+        shell.rm('__tests__/ex-2objs_copy.json');
+        done();
     });
 });
-
-*/

@@ -30,28 +30,18 @@ describe('Update object in array.', () => {
     });
 });
 
-/*
-
-*** PENDING TO SOLVE ISSUE WHEN TRY TO DELETE TE JSON COPY.***
-
 describe('Update object in a JSON file.', () => {
 
-    it('Should update an object in a JSON file.', (done) => {
+    it('Should update an object in a JSON file.', async (done) => {
         shell.cp('__tests__/ex-1obj.json', '__tests__/ex-1obj_copy.json');
 
-        jsonTool.updateObjectInFile('cj7w9hzfb000276jxhuc21qrv', '/Hello/', 'intents.regex', 'ex-1obj_copy', '__tests__/')
-            .then(() => {
-                jsonTool.getJsonFile('__tests__/', 'ex-1obj2').then((file) => {
-                    jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy').then(fileUpdated => {
-                        expect(fileUpdated).toEqual(file);
-                    })
-                });
+        let json = await jsonTool.updateObjectInFile('cj7w9hzfb000276jxhuc21qrv', '/Hello/', 'intents.regex', 'ex-1obj_copy', '__tests__/');
+        let file = await jsonTool.getJsonFile('__tests__/', 'ex-1obj2');
+        let fileUpdated = await jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy');
 
-            }).then(() => {
-                shell.rm('__tests__/ex-1obj_copy.json');
-                done();
-            });
+        expect(fileUpdated).toEqual(file);
+
+        shell.rm('__tests__/ex-1obj_copy.json');
+        done();
     });
 });
-
-*/

@@ -308,3 +308,17 @@ module.exports.deleteObjectFromFile = deleteObjectFromFile;
 module.exports.getObjectIndexById = getObjectIndexById;
 module.exports.goToPositon = goToPositon;
 module.exports.saveArrayObject = saveArrayObject;
+
+
+/*
+const obj = {
+    id: '123gryr78mghi456sfgajq234',
+    regex: '/<3/',
+    intent: 'love'
+};
+
+saveArrayObject(null, 'ex-1obj', obj)
+    .then(result => {
+        console.log(result);
+    })
+    */

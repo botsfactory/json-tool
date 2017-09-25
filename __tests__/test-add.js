@@ -1,5 +1,6 @@
 const jsonTool = require('../index');
 const shell = require('shelljs');
+const async = require('async');
 
 let exampleObj1 = {
     intents: [
@@ -34,27 +35,17 @@ describe('Add object to array.', () => {
     });
 });
 
-/* 
-
-*** PENDING TO SOLVE ISSUE WHEN TRY TO DELETE TE JSON COPY.***
-
 describe('Add object to a JSON file.', () => {
 
-    it('Should add an object to array in a JSON file.', (done) => {
+    it('Should add an object to array in a JSON file.', async (done) => {
         shell.cp('__tests__/ex-1obj.json', '__tests__/ex-1obj_copy.json');
 
-        jsonTool.addObjectToFile(exampleObj2.intents[1], 'intents', 'ex-1obj_copy', '__tests__/')
-            .then(() => {
-                jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy')
-                    .then(file => {
-                        expect(file).toEqual(exampleObj2);
-                    });
+        let json = await jsonTool.addObjectToFile(exampleObj2.intents[1], 'intents', 'ex-1obj_copy', '__tests__/');
+        let file = await jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy');
 
-            }).then(() => {
-                shell.rm('__tests__/ex-1obj_copy.json');
-                done();
-            });
+        expect(file).toEqual(exampleObj2);
+
+        shell.rm('__tests__/ex-1obj_copy.json');
+        done();
     });
 });
-
-*/

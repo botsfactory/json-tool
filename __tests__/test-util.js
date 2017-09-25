@@ -28,28 +28,17 @@ describe('Go to position in JS object.', () => {
     });
 });
 
-/* 
-
-*** PENDING TO SOLVE ISSUE WHEN TRY TO DELETE TE JSON COPY.***
-
 describe('Save array object to array.', () => {
 
-    it('Should save an object in an array in a JS object.', (done) => {
-        shell.cp('__tests__/ex-1obj.json', '__tests__/ex-1obj_copy.json');
+    it('Should save an object in an array in a JS object.', async (done) => {
+        shell.exec('touch newFile.json');
 
-        jsonTool.saveArrayObject('intents', 'ex-1obj_copy', obj)
-            .then(() => {
-                jsonTool.getJsonFile('__tests__/', 'ex-2objs').then((file) => {
-                    jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy').then(fileUpdated => {
-                        expect(fileUpdated).toEqual(file);
-                    });
-                });
+        let json = await jsonTool.saveArrayObject('__tests__/', 'newFile', obj);
+        let file = await jsonTool.getJsonFile('__tests__/', 'newFile');
 
-            }).then(() => {
-                shell.rm('__tests__/ex-1obj_copy.json');
-                done();
-            });
+        expect(file).toEqual(obj);
+
+        shell.rm('__tests__/newFile.json');
+        done();
     });
 });
-
-*/
