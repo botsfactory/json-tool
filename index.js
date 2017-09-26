@@ -107,26 +107,6 @@ function getObjectById(id, path, obj) {
 }
 
 /**
- * This method replace the object with the specified
- * id for the new object.
- * Use dot notation to specify the path.
- * 
- * @param  {} id
- * @param  {} path
- * @param  {} newObj
- * @param  {} jsonObj
- */
-function updateObjectInArray(id, path, newObj, jsonObj) {
-    let clonedObj = _.cloneDeep(jsonObj);
-    let parentObj = path ? goToPositon(path, jsonObj) : clonedObj;
-
-    parentObj = deleteObjectFromArray(id, path, jsonObj);
-    parentObj = addObjectToArray(path, parentObj, newObj);
-
-    return parentObj;
-}
-
-/**
  * This method add a new object to an array in a JS object.
  * You can add new object to array directly if path is null.
  * Use dot notation to specify the path.
@@ -141,27 +121,6 @@ function addObjectToArray(path, obj, newObj) {
 
     if (Array.isArray(parentObj)) {
         parentObj.push(newObj);
-    }
-
-    return clonedObj;
-}
-
-/**
- * This method delete an object from an array in a JS object.
- * 'obj' can be an JS object or directly an array.
- * Use dot notation to specify the path.
- * 
- * @param  {} id
- * @param  {} path
- * @param  {} obj
- */
-function deleteObjectFromArray(id, path, obj) {
-    let clonedObj = _.cloneDeep(obj);
-    let parentObj = path ? goToPositon(path, clonedObj) : clonedObj;
-
-    if (Array.isArray(parentObj)) {
-        let index = getObjectIndexById(id, parentObj);
-        parentObj.splice(index, 1);
     }
 
     return clonedObj;
@@ -200,6 +159,47 @@ function updateValueInArray(id, path, value, obj) {
     }
 
     return obj;
+}
+
+/**
+ * This method replace the object with the specified
+ * id for the new object.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} id
+ * @param  {} path
+ * @param  {} newObj
+ * @param  {} jsonObj
+ */
+function updateObjectInArray(id, path, newObj, jsonObj) {
+    let clonedObj = _.cloneDeep(jsonObj);
+    let parentObj = path ? goToPositon(path, jsonObj) : clonedObj;
+
+    parentObj = deleteObjectFromArray(id, path, jsonObj);
+    parentObj = addObjectToArray(path, parentObj, newObj);
+
+    return parentObj;
+}
+
+/**
+ * This method delete an object from an array in a JS object.
+ * 'obj' can be an JS object or directly an array.
+ * Use dot notation to specify the path.
+ * 
+ * @param  {} id
+ * @param  {} path
+ * @param  {} obj
+ */
+function deleteObjectFromArray(id, path, obj) {
+    let clonedObj = _.cloneDeep(obj);
+    let parentObj = path ? goToPositon(path, clonedObj) : clonedObj;
+
+    if (Array.isArray(parentObj)) {
+        let index = getObjectIndexById(id, parentObj);
+        parentObj.splice(index, 1);
+    }
+
+    return clonedObj;
 }
 
 /**
