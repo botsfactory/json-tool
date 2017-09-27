@@ -11,11 +11,11 @@ These instructions will get you a copy of the JSON-Tool to use in your code.
 
 ## Reference
 
-To get the JSON-Tool run the following commands:
+The commands available are:
 
 ### goToPositon(path, obj)
 
-This method go to the path and return the contained object.
+This method go to the path and return the contained object.  
 
 
 ### getObjectIndexById(id, arr)
