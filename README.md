@@ -2,7 +2,7 @@
 
 # BotsFactory JSON-Tool
 
-JSON-Tool is a simple JavaScript tool for JS Objects and JSON processing.
+JSON-Tool is a simple JavaScript tool for JS Objects and JSON processing.  
 You can read, update, replace, delte and write JSON data.
 
 ## Getting Started

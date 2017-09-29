@@ -2,7 +2,7 @@ const jsonfile = require('jsonfile');
 const jsonQuery = require('json-query');
 const _ = require('lodash');
 
-var algo = module.exports = {
+module.exports = {
 
     /**
      * This method go to path and return the contained object.
