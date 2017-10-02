@@ -98,9 +98,9 @@ This method get specific object filtered from a JSON file.
 This method replace an object in the specified path in a JSON file.
 
 
-**Note:**
-Use dot notation to specify the path in the JSON.
-'filter' parameter must be a valid json object. It's used to filter the desired object.
+**Note:**  
+1. Use dot notation to specify the path in the JSON.  
+2. 'filter' parameter must be a valid json. It's used to filter the desired object.
 
 
 ## Authors
