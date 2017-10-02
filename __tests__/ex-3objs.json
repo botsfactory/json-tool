@@ -1,17 +1,17 @@
 {
     "intents": [
         {
-            "id": "cj7w9hzfb000276jxhuc21qrv",
+            "bfId": "cj7w9hzfb000276jxhuc21qrv",
             "regex": "/Hi/",
             "intent": "greeting"
         },
         {
-            "id": "23fgerty568hj56837dfbdhw1",
+            "bfId": "23fgerty568hj56837dfbdhw1",
             "regex": "/Hello/",
             "intent": "greeting"
         },
         {
-            "id": "123gryr78mghi456sfgajq234",
+            "bfId": "123gryr78mghi456sfgajq234",
             "regex": "/<3/",
             "intent": "love"
         }

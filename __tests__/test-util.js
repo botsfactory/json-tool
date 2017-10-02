@@ -6,7 +6,7 @@ let nestedObj = {
     level1: {
         level2: {
             level3: {
-                id: '123gryr78mghi456sfgajq234',
+                bfId: '123gryr78mghi456sfgajq234',
                 regex: '/<3/',
                 intent: 'love'
             }
@@ -15,7 +15,7 @@ let nestedObj = {
 }
 
 const obj = {
-    id: '123gryr78mghi456sfgajq234',
+    bfId: '123gryr78mghi456sfgajq234',
     regex: '/<3/',
     intent: 'love'
 };

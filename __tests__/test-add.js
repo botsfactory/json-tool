@@ -5,7 +5,7 @@ const async = require('async');
 let exampleObj1 = {
     intents: [
         {
-            id: 'cj7w9hzfb000276jxhuc21qrv',
+            bfId: 'cj7w9hzfb000276jxhuc21qrv',
             regex: '/Hi/',
             intent: 'greeting'
         }
@@ -15,12 +15,12 @@ let exampleObj1 = {
 const exampleObj2 = {
     intents: [
         {
-            id: 'cj7w9hzfb000276jxhuc21qrv',
+            bfId: 'cj7w9hzfb000276jxhuc21qrv',
             regex: '/Hi/',
             intent: 'greeting'
         },
         {
-            id: '23fgerty568hj56837dfbdhw1',
+            bfId: '23fgerty568hj56837dfbdhw1',
             regex: '/Hello/',
             intent: 'greeting'
         }

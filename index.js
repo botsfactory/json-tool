@@ -34,18 +34,6 @@ module.exports = {
     },
 
     /**
-     * This method return the object id in the array.
-     * 
-     * @param  {} id
-     * @param  {} arr
-     */
-    getObjectIndexById(id, arr) {
-        return _.findIndex(arr, (obj) => {
-            return obj.id == id;
-        });
-    },
-
-    /**
      * This method read a json file and return it as JS Object.
      * Use '/' in the path to specify the rute.
      * 
@@ -78,33 +66,18 @@ module.exports = {
     },
 
     /**
-     * This method return an array of objects filtered by json in array/object.
+     * This method return an array of objects filtered from array/object.
+     * 'filer' must be a json object. It's used to filter.
      * You can search in the array directly if path is null.
      * 
-     * @param  {} json
+     * @param  {} filter
      * @param  {} path
      * @param  {} obj
      */
-    getArrayObjectFilered(json, path, obj) {
+    getArrayObjectFilered(filter, path, obj) {
         let jsonPath = path || '';
         let parentObj = path ? this.goToPositon(path, obj) : obj;
-
-        return _.filter(parentObj, json);
-    },
-
-    /**
-     * This method return an object filtered by id from an array.
-     * 
-     * @param  {} id
-     * @param  {} path
-     * @param  {} obj
-     */
-    getObjectById(id, path, obj) {
-        let jsonPath = path || '';
-        let parentObj = path ? this.goToPositon(path, obj) : obj;
-        let index = this.getObjectIndexById(id, parentObj);
-
-        return parentObj[index];
+        return _.filter(parentObj, filter);
     },
 
     /**
@@ -129,14 +102,15 @@ module.exports = {
 
     /**
      * This method return the object updated with the new value.
+     * 'filer' must be a json object. It's used to filter the object to update.
      * Use dot notation to specify the path.
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} path
      * @param  {} value
      * @param  {} obj
      */
-    updateValueInArray(id, path, value, obj) {
+    updateValueInArray(filter, path, value, obj) {
         let clonedObj = _.cloneDeep(obj);
         let parts = path.split('.');
         let parentPath = '';
@@ -153,7 +127,7 @@ module.exports = {
         let parentObj = this.goToPositon(parentPath, obj);
 
         if (Array.isArray(parentObj)) {
-            let index = this.getObjectIndexById(id, parentObj);
+            let index = _.findIndex(parentObj, filter);
             if (index != -1) {
                 parentObj[index][key] = value;
             }
@@ -163,20 +137,20 @@ module.exports = {
     },
 
     /**
-     * This method replace the object with the specified
-     * id for the new object.
+     * This method replace the object filtered for the new object.
+     * 'filer' must be a json object. It's used to filter the object to update.
      * Use dot notation to specify the path.
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} path
      * @param  {} newObj
      * @param  {} jsonObj
      */
-    updateObjectInArray(id, path, newObj, jsonObj) {
+    updateObjectInArray(filter, path, newObj, jsonObj) {
         let clonedObj = _.cloneDeep(jsonObj);
         let parentObj = path ? this.goToPositon(path, jsonObj) : clonedObj;
 
-        parentObj = this.deleteObjectFromArray(id, path, clonedObj);
+        parentObj = this.deleteObjectFromArray(filter, path, clonedObj);
         parentObj = this.addObjectToArray(path, parentObj, newObj);
 
         return parentObj;
@@ -212,18 +186,19 @@ module.exports = {
     /**
      * This method delete an object from an array in a JS object.
      * 'obj' can be an JS object or directly an array.
+     * 'filer' must be a json object. It's used to filter the object to delete.
      * Use dot notation to specify the path.
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} path
      * @param  {} obj
      */
-    deleteObjectFromArray(id, path, obj) {
+    deleteObjectFromArray(filter, path, obj) {
         let clonedObj = _.cloneDeep(obj);
         let parentObj = path ? this.goToPositon(path, clonedObj) : clonedObj;
 
         if (Array.isArray(parentObj)) {
-            let index = this.getObjectIndexById(id, parentObj);
+            let index = _.findIndex(parentObj, filter);
             parentObj.splice(index, 1);
 
             if (_.size(parentObj) < 1) {
@@ -280,18 +255,19 @@ module.exports = {
 
     /**
      * This method update specific object for an ID in a JSON file.
+     * 'filer' must be a json object. It's used to filter the object to update.
      * Use dot notation to specify the path(keyPath).
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} newObj
      * @param  {} keyPath
      * @param  {} file
      * @param  {} filePath
      */
-    updateObjectInFile(id, newObj, keyPath, file, filePath) {
+    updateObjectInFile(filter, newObj, keyPath, file, filePath) {
         return this.getJsonFile(filePath, file)
             .then(json => {
-                let newJson = this.updateObjectInArray(id, keyPath, newObj, json);
+                let newJson = this.updateObjectInArray(filter, keyPath, newObj, json);
                 return newJson;
             })
             .then(jsonToSave => {
@@ -304,18 +280,19 @@ module.exports = {
 
     /**
      * This method update specific value for a key in a JSON file.
+     * 'filer' must be a json object. It's used to filter the object to update.
      * Use dot notation to specify the path(keyPath).
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} value
      * @param  {} keyPath
      * @param  {} file
      * @param  {} filePath
      */
-    updateValueInFile(id, value, keyPath, file, filePath) {
+    updateValueInFile(filter, value, keyPath, file, filePath) {
         return this.getJsonFile(filePath, file)
             .then(json => {
-                let newJson = this.updateValueInArray(id, keyPath, value, json);
+                let newJson = this.updateValueInArray(filter, keyPath, value, json);
                 return newJson;
             })
             .then(jsonToSave => {
@@ -328,17 +305,18 @@ module.exports = {
 
     /**
      * This method delete specific object in a JSON file.
+     * 'filer' must be a json object. It's used to filter the object to delete.
      * Use dot notation to specify the path(keyPath).
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} keyPath
      * @param  {} file
      * @param  {} filePath
      */
-    deleteObjectFromFile(id, keyPath, file, filePath) {
+    deleteObjectFromFile(filter, keyPath, file, filePath) {
         return this.getJsonFile(filePath, file)
             .then(json => {
-                let newJson = this.deleteObjectFromArray(id, keyPath, json);
+                let newJson = this.deleteObjectFromArray(filter, keyPath, json);
                 return newJson;
             })
             .then(jsonToSave => {
@@ -350,18 +328,19 @@ module.exports = {
     },
 
     /**
-     * This method get specific object by path and id from a JSON file.
+     * This method get specific object from a JSON file.
+     * 'filer' must be a json object. It's used to filter.
      * Use dot notation to specify the path(keyPath).
      * 
-     * @param  {} id
+     * @param  {} filter
      * @param  {} keyPath
      * @param  {} file
      * @param  {} filePath
      */
-    getObjectByIdFromFile(id, keyPath, file, filePath) {
+    getObjectFromFile(filter, keyPath, file, filePath) {
         return this.getJsonFile(filePath, file)
             .then(json => {
-                let newJson = this.getObjectById(id, keyPath, json);
+                let newJson = this.getArrayObjectFilered(filter, keyPath, json)[0];
                 return newJson;
             });
     },

@@ -5,7 +5,7 @@ const async = require('async');
 const exampleObjB = {
     intents: [
         {
-            id: 'cj7w9hzfb000276jxhuc21qrv',
+            bfId: 'cj7w9hzfb000276jxhuc21qrv',
             regex: '/Hi/',
             intent: 'greeting'
         }
@@ -15,7 +15,7 @@ const exampleObjB = {
 const exampleObjA = {
     intents: [
         {
-            id: 'cj7w9hzfb000276jxhuc21qrv',
+            bfId: 'cj7w9hzfb000276jxhuc21qrv',
             regex: '/Hello/',
             intent: 'greeting'
         }
@@ -25,7 +25,8 @@ const exampleObjA = {
 describe('Update object in array.', () => {
 
     it('Should update an object in an array in a JS object.', () => {
-        let updated = jsonTool.updateObjectInArray('cj7w9hzfb000276jxhuc21qrv', 'intents', exampleObjA.intents[0], exampleObjB);
+        let jsonId = { bfId: 'cj7w9hzfb000276jxhuc21qrv' };
+        let updated = jsonTool.updateObjectInArray(jsonId, 'intents', exampleObjA.intents[0], exampleObjB);
         expect(updated).toEqual(exampleObjA);
     });
 });
@@ -35,7 +36,8 @@ describe('Update object in a JSON file.', () => {
     it('Should update an object in a JSON file.', async (done) => {
         shell.cp('__tests__/ex-1obj.json', '__tests__/ex-1obj_copy.json');
 
-        let json = await jsonTool.updateObjectInFile('cj7w9hzfb000276jxhuc21qrv', exampleObjA.intents[0], 'intents', 'ex-1obj_copy', '__tests__/');
+        let jsonId = { bfId: 'cj7w9hzfb000276jxhuc21qrv' };
+        let json = await jsonTool.updateObjectInFile(jsonId, exampleObjA.intents[0], 'intents', 'ex-1obj_copy', '__tests__/');
         let file = await jsonTool.getJsonFile('__tests__/', 'ex-1obj2');
         let fileUpdated = await jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy');
 
@@ -50,7 +52,8 @@ describe('Update object in a JSON file.', () => {
 describe('Update value in array.', () => {
 
     it('Should update an object in an array in a JS object.', () => {
-        let updated = jsonTool.updateValueInArray('cj7w9hzfb000276jxhuc21qrv', 'intents.regex', '/Hello/', exampleObjB);
+        let jsonId = { bfId: 'cj7w9hzfb000276jxhuc21qrv' };
+        let updated = jsonTool.updateValueInArray(jsonId, 'intents.regex', '/Hello/', exampleObjB);
         expect(updated).toEqual(exampleObjA);
     });
 });
@@ -59,8 +62,9 @@ describe('Update value in a JSON file.', () => {
 
     it('Should update an value in a JSON file.', async (done) => {
         shell.cp('__tests__/ex-1obj.json', '__tests__/ex-1obj_copy.json');
-
-        let json = await jsonTool.updateValueInFile('cj7w9hzfb000276jxhuc21qrv', '/Hello/', 'intents.regex', 'ex-1obj_copy', '__tests__/');
+        
+        let jsonId = { bfId: 'cj7w9hzfb000276jxhuc21qrv' };
+        let json = await jsonTool.updateValueInFile(jsonId, '/Hello/', 'intents.regex', 'ex-1obj_copy', '__tests__/');
         let file = await jsonTool.getJsonFile('__tests__/', 'ex-1obj2');
         let fileUpdated = await jsonTool.getJsonFile('__tests__/', 'ex-1obj_copy');
 
