@@ -380,7 +380,7 @@ module.exports = {
         if (fileNames.length > 0) {
             let filesContent = fileNames.map(async (fileName) => {
                 let name = fileName.split('.')[0];
-                let file =  {};
+                let file = {};
 
                 file.name = name;
                 file.content = await this.getJsonFile(`${path}/`, name);
@@ -390,5 +390,16 @@ module.exports = {
 
             return Promise.all(filesContent);
         }
+    },
+
+    async getFolderContentInAJson(path) {
+        let arrContent = await this.getFolderContent(path);
+        let json = {};
+
+        arrContent.forEach(file => {
+            json[file.name] = file.content;
+        });
+
+        return json;
     }
 }
