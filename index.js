@@ -1,5 +1,6 @@
 const jsonfile = require('jsonfile');
 const jsonQuery = require('json-query');
+const fs = require('fs');
 const _ = require('lodash');
 
 module.exports = {
@@ -366,5 +367,28 @@ module.exports = {
                         return result;
                     });
             });
+    },
+
+    /** This method get all JSONs files in the folder and return each file
+     *  in an JSONs array with the file name and content.
+     * 
+     * @param  {} path
+     */
+    async getFolderContent(path) {
+        let fileNames = fs.readdirSync(path);
+
+        if (fileNames.length > 0) {
+            let filesContent = fileNames.map(async (fileName) => {
+                let name = fileName.split('.')[0];
+                let file =  {};
+
+                file.name = name;
+                file.content = await this.getJsonFile(`${path}/`, name);
+
+                return file;
+            });
+
+            return Promise.all(filesContent);
+        }
     }
 }
