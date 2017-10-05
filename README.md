@@ -97,6 +97,11 @@ This method get specific object filtered from a JSON file.
 
 This method replace an object in the specified path in a JSON file.
 
+* getFolderContent(path)
+
+This method get all JSONs files in the folder and return each file
+in an JSONs array with the file name and content.
+
 
 **Note:**  
 1. Use dot notation to specify the path in the JSON.  
