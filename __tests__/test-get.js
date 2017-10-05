@@ -70,3 +70,28 @@ describe('Get object by ID from a JSON file.', () => {
             });
     });
 });
+
+describe('Get folder content.', () => {
+
+    it('Should return an array with the files content for a folder.', () => {
+        let arrFolder = [
+            {
+                "name": "json1",
+                content: {
+                    "intent": "getHoroscope"
+                }
+            },
+            {
+                "name": "json2",
+                content: {
+                    "intent": "getPizza"
+                }
+            }
+        ]
+
+        jsonTool.getFolderContent('__tests__/ex-folder')
+            .then(result => {
+                expect(result).toEqual(arrFolder);
+            });
+    });
+});
