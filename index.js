@@ -140,6 +140,7 @@ module.exports = {
     /**
      * This method replace the object filtered for the new object.
      * 'filer' must be a json object. It's used to filter the object to update.
+     * 'filter' must be null if the object in path is not an array.
      * Use dot notation to specify the path.
      * 
      * @param  {} filter
@@ -151,8 +152,14 @@ module.exports = {
         let clonedObj = _.cloneDeep(jsonObj);
         let parentObj = path ? this.goToPositon(path, jsonObj) : clonedObj;
 
-        parentObj = this.deleteObjectFromArray(filter, path, clonedObj);
-        parentObj = this.addObjectToArray(path, parentObj, newObj);
+        if (Array.isArray(parentObj)) {
+            parentObj = this.deleteObjectFromArray(filter, path, clonedObj);
+            parentObj = this.addObjectToArray(path, parentObj, newObj);
+
+        } else {
+            parentObj = newObj;
+        }
+
 
         return parentObj;
     },
@@ -257,6 +264,7 @@ module.exports = {
     /**
      * This method update specific object for an ID in a JSON file.
      * 'filer' must be a json object. It's used to filter the object to update.
+     * 'filter' must be null if the object in path is not an array.
      * Use dot notation to specify the path(keyPath).
      * 
      * @param  {} filter
@@ -392,6 +400,11 @@ module.exports = {
         }
     },
 
+    /**
+     * This method get the files in a path and return the conent in a unique JSON file.
+     * 
+     * @param  {} path
+     */
     async getFolderContentInAJson(path) {
         let arrContent = await this.getFolderContent(path);
         let json = {};
