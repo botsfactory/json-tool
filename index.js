@@ -338,7 +338,9 @@ module.exports = {
 
     /**
      * This method get specific object from a JSON file.
-     * 'filer' must be a json object. It's used to filter.
+     * You can filter the content if the object contains an array.
+     * 'filer' must be a json object.
+     * 'filer' can be null.
      * Use dot notation to specify the path(keyPath).
      * 
      * @param  {} filter
@@ -349,7 +351,14 @@ module.exports = {
     getObjectFromFile(filter, keyPath, file, filePath) {
         return this.getJsonFile(filePath, file)
             .then(json => {
-                let newJson = this.getArrayObjectFilered(filter, keyPath, json)[0];
+                let newJson;
+                let parentObj = this.goToPositon(keyPath, json);
+
+                if (filter && Array.isArray(parentObj)) {
+                    newJson = this.getArrayObjectFilered(filter, keyPath, json)[0];
+                } else {
+                    newJson = parentObj;
+                }
                 return newJson;
             });
     },
