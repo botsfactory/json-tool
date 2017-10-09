@@ -153,15 +153,14 @@ module.exports = {
         let parentObj = path ? this.goToPositon(path, jsonObj) : clonedObj;
 
         if (Array.isArray(parentObj)) {
-            parentObj = this.deleteObjectFromArray(filter, path, clonedObj);
-            parentObj = this.addObjectToArray(path, parentObj, newObj);
+            clonedObj = this.deleteObjectFromArray(filter, path, clonedObj);
+            clonedObj = this.addObjectToArray(path, clonedObj, newObj);
 
         } else {
-            parentObj = newObj;
+            _.set(clonedObj, path, newObj);
         }
 
-
-        return parentObj;
+        return clonedObj;
     },
 
     /**
