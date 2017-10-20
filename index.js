@@ -114,18 +114,16 @@ module.exports = {
     updateValueInArray(filter, path, value, obj) {
         let clonedObj = _.cloneDeep(obj);
         let parts = path.split('.');
-        let parentPath = '';
+        let parentObj = {};
         let key = '';
 
         if (parts.length > 1) {
-            parentPath = parts.slice(0, -1).join('.');
+            parentObj = this.goToPositon(parts.slice(0, -1).join('.'), obj);
             key = parts.slice(-1)[0];
         } else {
-            parentPath = path;
+            parentObj = obj;
             key = path;
         }
-
-        let parentObj = this.goToPositon(parentPath, obj);
 
         if (Array.isArray(parentObj)) {
             let index = _.findIndex(parentObj, filter);
