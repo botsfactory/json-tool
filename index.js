@@ -197,20 +197,26 @@ module.exports = {
      * @param  {} filter
      * @param  {} path
      * @param  {} obj
+     * 
+     * TODO: Refactor this method. Works fine but It isn't so clean.
      */
     deleteObjectFromArray(filter, path, obj) {
         let clonedObj = _.cloneDeep(obj);
         let parentObj = path ? this.goToPositon(path, clonedObj) : clonedObj;
 
         if (Array.isArray(parentObj)) {
-            let index = _.findIndex(parentObj, filter);
-            parentObj.splice(index, 1);
+            if (filter) {
+                let index = _.findIndex(parentObj, filter);
+                parentObj.splice(index, 1);
+            }
 
-            if (_.size(parentObj) < 1) {
+            if (!filter || _.size(parentObj) < 1) {
                 parentObj = [];
             }
         }
 
+        _.set(clonedObj, path, parentObj);
+        
         return clonedObj;
     },
 
